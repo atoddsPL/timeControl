@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -13,7 +14,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-mongoose.connect("mongodb://localhost:27017/timeDB", {useNewUrlParser: true});
+mongoose.connect(String(process.env.CONNECT_URL), {useNewUrlParser: true});
 mongoose.set('useCreateIndex', true);
 
 // const userSchema = new mongoose.Schema({
@@ -47,10 +48,10 @@ const timeUsageSchema = new mongoose.Schema({
 const TimeUsage = new mongoose.model("TimeUsage", timeUsageSchema);
 
 // let timeUsage = new TimeUsage({
-//     day: "20210320",
-//     action: 1,
-//     timeInSeconds: (1*60*60),
-//     timeRemainingAfter: (0*60*60)
+//     day: "20210319",
+//     action: 0,
+//     timeInSeconds: (3*60*60),
+//     timeRemainingAfter: (3*60*60)
 // });
 // timeUsage.save();
 
@@ -227,7 +228,10 @@ app.post("/daily", async (req, res)=>{
     }
 });
 
-
-app.listen(3000, function(){
-    console.log("Server started on port 3000");
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+app.listen(port, function(){
+    console.log("Server started");
 });
