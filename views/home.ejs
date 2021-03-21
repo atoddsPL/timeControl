@@ -19,7 +19,23 @@
     </button>
   </div>
 </div>
-<%=timeRemainingInSeconds %>
+<div class="stopwatch2">
+  <h1><span class="gold">POZOSTAŁY CZAS</span> GRY</h1>
+  <div class="circle">
+    <span class="time" id="timeremaining"><%=timeInString %></span>
+  </div>
+  <div class="reczne">
+    <h2>Dodaj ręcznie czas gry:</h2>
+    <form action="/manual" method='post'>
+    <input type="text" name="H" width="4">h <input type="text" name="M" width="4">min
+    <input type="submit" value="Dodaj uzycie" class="btn success">
+  </form>
+
+  <button id="dailyButton" class="btn success fullwidth">Dodaj dzienny czas</button>
+    </div>
+  </div>
+</div>
+
 <script src="js/stoper.js"></script>
 
 <%- include('partials/footer') %>

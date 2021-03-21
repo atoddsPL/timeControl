@@ -114,6 +114,7 @@ const isTodayUnlimited = async function()  {
 }
 
 const secondsToString = (sec) => {
+    sec = Math.floor(sec);
     let s = sec % 60;
     let mm = (sec - s) / 60;
     let m = mm % 60;
@@ -138,9 +139,94 @@ app.get("/", async (req, res)=>{
         const timeRemainingInSec = await timeRemaining();
         const timeRemainingString = secondsToString(timeRemainingInSec);
         console.log(timeRemainingString);   
-        res.render("home", {timeRemainingInSeconds : timeRemainingInSec});
+        res.render("home", {timeRemainingInSeconds : timeRemainingInSec,
+                            timeInString: timeRemainingString});
     }
 });
+
+app.post("/", async (req, res) => {
+    console.log(req);
+    const unlimitedTimeDay = await isTodayUnlimited();
+    const timeRemainingInSec = await timeRemaining();
+    if (unlimitedTimeDay === true) {
+        res.render("free");
+    } else { 
+        if (req.body.elapsedTime > 0) {
+            let today = new shortDate();
+            usedSec = Math.floor(req.body.elapsedTime);
+            if (usedSec > timeRemainingInSec) {
+                usedSec = timeRemainingInSec;
+            }
+            let timeUsage = new TimeUsage({
+            day: today.toString(),
+            action: 1,
+            timeInSeconds: usedSec,
+            timeRemainingAfter: timeRemainingInSec - usedSec
+            });
+            timeUsage.save();
+        }
+        res.send(secondsToString(timeRemainingInSec-usedSec));
+    }
+
+});
+
+app.post("/manual", async (req, res) => {
+    console.log(req);
+    const unlimitedTimeDay = await isTodayUnlimited();
+    const timeRemainingInSec = await timeRemaining();
+    if (unlimitedTimeDay === true) {
+        res.redirect("/");
+    } else { 
+        if (req.body.M > 0 || req.body.H > 0) {
+            let today = new shortDate();
+            let usedSec = req.body.M*60;
+            usedSec += req.body.H*60*60;
+            if (usedSec > timeRemainingInSec) {
+                usedSec = timeRemainingInSec;
+            }
+            let timeUsage = new TimeUsage({
+            day: today.toString(),
+            action: 1,
+            timeInSeconds: usedSec,
+            timeRemainingAfter: timeRemainingInSec - usedSec
+            });
+            await timeUsage.save();
+            res.redirect("/");
+        }
+        else {
+            res.redirect("/");
+        }
+    }
+
+});
+
+
+app.post("/daily", async (req, res)=>{
+    const unlimitedTimeDay = await isTodayUnlimited();
+    const timeRemainingInSec = await timeRemaining();
+    if (unlimitedTimeDay === true) {
+        res.redirect("/");
+    } else {
+        let today = new shortDate();
+        TimeUsage.findOne({day: today.toString(), action: 0}, (err, foundUsage) => {
+            if (foundUsage) {
+                res.send('0');
+                console.log(foundUsage);
+            } else {
+                let addedSec = 3*3600;
+                let timeUsage = new TimeUsage({
+                    day: today.toString(),
+                    action: 0,
+                    timeInSeconds: addedSec,
+                    timeRemainingAfter: timeRemainingInSec + addedSec
+                    });
+                    timeUsage.save();
+                    res.send(secondsToString(timeRemainingInSec + addedSec));
+            }
+        });
+    }
+});
+
 
 app.listen(3000, function(){
     console.log("Server started on port 3000");

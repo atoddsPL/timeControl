@@ -18,11 +18,20 @@ body {
 
 
 .stopwatch {
-  display: grid;
+  display:grid;
   justify-items: center;
   grid-row-gap: 23px;
-  width: 100%;
+  width: 50%; 
   padding-top: 25px;
+  float: left;
+}
+.stopwatch2 {
+  display:grid;
+  justify-items: center;
+  grid-row-gap: 23px;
+  width: 50%; 
+  padding-top: 25px;
+  float: right;
 }
 
 .circle {
@@ -43,6 +52,14 @@ body {
   font-size: 48px;
 }
 
+.reczne input[type=text]{
+  width: 40px;
+}
+
+.reczne {
+  text-align: center;
+  justify-content: center;
+}
 .gold {
   font-weight: 900;
 
@@ -50,6 +67,12 @@ body {
   text-shadow: 0 0 0px #fff, 0 0 50px #f2c94c;
 }
 
+button.gold   {
+  padding-top: 20px;
+  font-size: 30px;
+  border: 2px;
+  border-color: white;
+}
 .controls {
   display: flex;
   justify-content: space-between;
@@ -72,4 +95,29 @@ button {
 
 #pauseButton {
   display: none;
+}
+
+.btn {
+  
+  border: 2px solid black;
+  margin-top: 25px;
+  color: black;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Green */
+.success {
+  border-color: #f9fffa;
+  color: rgb(255, 255, 255);
+}
+
+.success:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.fullwidth {
+  width: 100%;
 }

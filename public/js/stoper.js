@@ -43,18 +43,37 @@ function timeToString(time) {
     showButton("PAUSE");
   }
   
+  function postTime(elTime) {
+    elTime /= 1000;
+    $.post("/", { elapsedTime : elTime }, (data) => {
+      console.log(data);
+        document.getElementById('timeremaining').innerHTML = data;
+    }) ;
+  }
+
   function pause() {
+
     clearInterval(timerInterval);
     showButton("PLAY");
   }
   
   function reset() {
+    postTime(elapsedTime);
     clearInterval(timerInterval);
     print("00:00:00");
     elapsedTime = 0;
     showButton("PLAY");
   }
   
+  function daily() {
+    $.post("/daily", (data) => {
+        if (data == 0){
+          alert("dzis juz byl dodany czas!");
+        } else {
+          document.getElementById('timeremaining').innerHTML = data;
+        }
+    }) ;
+  }
   // Create function to display buttons
   
   function showButton(buttonKey) {
@@ -72,3 +91,4 @@ function timeToString(time) {
   playButton.addEventListener("click", start);
   pauseButton.addEventListener("click", pause);
   resetButton.addEventListener("click", reset);
+  dailyButton.addEventListener("click", daily);
